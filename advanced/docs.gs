@@ -18,6 +18,7 @@
 /**
  * Create a new document.
  * @see https://developers.google.com/docs/api/reference/rest/v1/documents/create
+ * @return {string} documentId
  */
 function createDocument() {
   try {
@@ -37,6 +38,7 @@ function createDocument() {
  * Performs "replace all".
  * @param {string} documentId The document to perform the replace text operations on.
  * @param {Object} findTextToReplacementMap A map from the "find text" to the "replace text".
+ * @return {Object} replies
  * @see https://developers.google.com/docs/api/reference/rest/v1/documents/batchUpdate
  */
 function findAndReplace(documentId, findTextToReplacementMap) {
@@ -75,6 +77,7 @@ function findAndReplace(documentId, findTextToReplacementMap) {
  * text.
  * @param {string} documentId The document the text is inserted into.
  * @param {string} text The text to insert into the document.
+ * @return {Object} replies
  * @see https://developers.google.com/docs/api/reference/rest/v1/documents/batchUpdate
  */
 function insertAndStyleText(documentId, text) {
@@ -86,24 +89,24 @@ function insertAndStyleText(documentId, text) {
       text: text
     }
   },
-    {
-      updateTextStyle: {
-        range: {
-          startIndex: 1,
-          endIndex: text.length + 1
+  {
+    updateTextStyle: {
+      range: {
+        startIndex: 1,
+        endIndex: text.length + 1
+      },
+      text_style: {
+        fontSize: {
+          magnitude: 12,
+          unit: 'PT'
         },
-        text_style: {
-          fontSize: {
-            magnitude: 12,
-            unit: 'PT'
-          },
-          weightedFontFamily: {
-            fontFamily: 'Calibri'
-          }
-        },
-        fields: 'weightedFontFamily, fontSize'
-      }
-    }];
+        weightedFontFamily: {
+          fontFamily: 'Calibri'
+        }
+      },
+      fields: 'weightedFontFamily, fontSize'
+    }
+  }];
   try {
     const response =Docs.Documents.batchUpdate({'requests': requests}, documentId);
     return response.replies;
@@ -118,6 +121,7 @@ function insertAndStyleText(documentId, text) {
 /**
  * Read the first paragraph of the body of a document.
  * @param {string} documentId The ID of the document to read.
+ * @return {Object} paragraphText
  * @see https://developers.google.com/docs/api/reference/rest/v1/documents/get
  */
 function readFirstParagraph(documentId) {

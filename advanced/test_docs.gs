@@ -20,47 +20,45 @@ const documentId='1EaLpBfuo3bMUeP6_P34auuQroh3bCWi6hLDppY6J6us';
  * @param {any} value A value that is expected to exist.
  */
 function expectToExist(value) {
-    if (!value) {
-        Logger.log('DNE');
-        return;
-    }
-    Logger.log('TEST: Exists');
-
+  if (!value) {
+    Logger.log('DNE');
+    return;
+  }
+  Logger.log('TEST: Exists');
 }
 
 /**
  * A simple exists assertion check for primatives (no nested objects).
  * Expects actual to equal expected. Logs the output.
- * @param {any} actual The actual value.
- * @param {any} expected The expected value.
+ * @param {any} expected The actual value.
+ * @param {any} actual  The expected value.
  */
 function expectToEqual(expected, actual) {
-    if (actual !== expected) {
-        Logger.log('TEST: actual: %s = expected: %s', actual, expected);
-        return;
-    }
+  if (actual !== expected) {
     Logger.log('TEST: actual: %s = expected: %s', actual, expected);
+    return;
+  }
+  Logger.log('TEST: actual: %s = expected: %s', actual, expected);
 }
-
 
 
 /**
  * Runs all tests.
  */
 function RUN_ALL_TESTS() {
-    itShouldCreateDocument();
-    itShouldInsertTextWithStyle();
-    itShouldReplaceText();
-    itShouldReadFirstParagraph();
+  itShouldCreateDocument();
+  itShouldInsertTextWithStyle();
+  itShouldReplaceText();
+  itShouldReadFirstParagraph();
 }
 
 /**
  * Creates a presentation.
  */
 function itShouldCreateDocument() {
-    const documentId = createDocument();
-    expectToExist(documentId);
-    deleteFileOnCleanup(documentId);
+  const documentId = createDocument();
+  expectToExist(documentId);
+  deleteFileOnCleanup(documentId);
 }
 
 
@@ -68,43 +66,41 @@ function itShouldCreateDocument() {
  * Insert text with style.
  */
 function itShouldInsertTextWithStyle() {
-    const documentId = createDocument();
-    expectToExist(documentId);
-    const text='This is the sample document';
-    const replies=insertAndStyleText(documentId,text)
-    expectToEqual(2, replies.length);
-
-    deleteFileOnCleanup(documentId);
+  const documentId = createDocument();
+  expectToExist(documentId);
+  const text='This is the sample document';
+  const replies=insertAndStyleText(documentId, text);
+  expectToEqual(2, replies.length);
+  deleteFileOnCleanup(documentId);
 }
 
 /**
  * Find and Replace the text.
  */
 function itShouldReplaceText() {
-    const documentId = createDocument();
-    expectToExist(documentId);
-    const text='This is the sample document';
-    const response=insertAndStyleText(documentId,text)
-    expectToEqual(2, response.replies.length);
-    const findTextToReplacementMap={'sample':'test','document':'Doc'};
-    const replies=findAndReplace(documentId,findTextToReplacementMap);
-    expectToEqual(2,replies.length);
-    //deleteFileOnCleanup(documentId);
+  const documentId = createDocument();
+  expectToExist(documentId);
+  const text='This is the sample document';
+  const response=insertAndStyleText(documentId, text);
+  expectToEqual(2, response.replies.length);
+  const findTextToReplacementMap={'sample': 'test', 'document': 'Doc'};
+  const replies=findAndReplace(documentId, findTextToReplacementMap);
+  expectToEqual(2, replies.length);
+  deleteFileOnCleanup(documentId);
 }
 
 /**
  * Read first paragraph
  */
-function itShouldReadFirstParagraph(){
-    const paragraphText=readFirstParagraph(documentId)
-    expectToExist(paragraphText)
-    expectToEqual(89 ,paragraphText.length);
-
+function itShouldReadFirstParagraph() {
+  const paragraphText=readFirstParagraph(documentId);
+  expectToExist(paragraphText);
+  expectToEqual(89, paragraphText.length);
 }
 /**
  * Delete the file
+ * @param {string} id Document ID
  */
-
 function deleteFileOnCleanup(id) {
-    Drive.Files.remove(id)
+  Drive.Files.remove(id);
 }
