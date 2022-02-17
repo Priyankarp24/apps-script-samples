@@ -16,6 +16,7 @@
 // [START classroom_create_alias]
 /**
  * Creates Course with an alias specified
+ * @return {string} courseId
  */
 function createAlias() {
   let course = {
@@ -33,6 +34,7 @@ function createAlias() {
     // Create the course using course details.
     course = Classroom.Courses.create(course);
     Logger.log('Course created: %s (%s)', course.name, course.id);
+    return course.id;
   } catch (err) {
     // TODO (developer) - Handle Courses.create() exception
     Logger.log('Failed to create course %s with an error %s', course.name, err.message);

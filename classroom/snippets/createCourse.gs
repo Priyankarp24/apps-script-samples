@@ -16,6 +16,7 @@
 // [START classroom_create_course]
 /**
  * Creates 10th Grade Biology Course.
+ * @return {string} courseId
  * @see https://developers.google.com/classroom/reference/rest/v1/courses/create
  */
 function createCourse() {
@@ -33,6 +34,7 @@ function createCourse() {
     // Create the course using course details.
     course = Classroom.Courses.create(course);
     Logger.log('Course created: %s (%s)', course.name, course.id);
+    return course.id;
   } catch (err) {
     // TODO (developer) - Handle Courses.create() exception
     Logger.log('Failed to create course %s with an error %s', course.name, err.message);
