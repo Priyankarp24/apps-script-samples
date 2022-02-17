@@ -23,11 +23,8 @@ function createDocument() {
   try {
     // Create document with title
     const document = Docs.Documents.create({'title': 'My New Document'});
-    if (document!== null) {
-      Logger.log('Created document with ID: ' + document.documentId);
-      return;
-    }
-    Logger.log('Unable to create Document');
+    Logger.log('Created document with ID: ' + document.documentId);
+    return document.documentId;
   } catch (e) {
     // TODO (developer) - Handle exception
     Logger.log('Failed with error %s', e.message);
@@ -64,6 +61,7 @@ function findAndReplace(documentId, findTextToReplacementMap) {
       const numReplacements = replies[index].replaceAllText.occurrencesChanged || 0;
       Logger.log('Request %s performed %s replacements.', index, numReplacements);
     }
+    return replies;
   } catch (e) {
     // TODO (developer) - Handle exception
     Logger.log('Failed with error : %s', e.message);
@@ -88,27 +86,27 @@ function insertAndStyleText(documentId, text) {
       text: text
     }
   },
-  {
-    updateTextStyle: {
-      range: {
-        startIndex: 1,
-        endIndex: text.length + 1
-      },
-      text_style: {
-        fontSize: {
-          magnitude: 12,
-          unit: 'PT'
+    {
+      updateTextStyle: {
+        range: {
+          startIndex: 1,
+          endIndex: text.length + 1
         },
-        weightedFontFamily: {
-          fontFamily: 'Calibri'
-        }
-      },
-      fields: 'weightedFontFamily, fontSize'
-    }
-  }];
+        text_style: {
+          fontSize: {
+            magnitude: 12,
+            unit: 'PT'
+          },
+          weightedFontFamily: {
+            fontFamily: 'Calibri'
+          }
+        },
+        fields: 'weightedFontFamily, fontSize'
+      }
+    }];
   try {
-    Docs.Documents.batchUpdate({'requests': requests}, documentId);
-    Logger.log('Insert text : %s', text);
+    const response =Docs.Documents.batchUpdate({'requests': requests}, documentId);
+    return response.replies;
   } catch (e) {
     // TODO (developer) - Handle exception
     Logger.log('Failed with an error %s', e.message);
@@ -141,7 +139,7 @@ function readFirstParagraph(documentId) {
           }
         }
         Logger.log(paragraphText);
-        return;
+        return paragraphText;
       }
     }
   } catch (e) {
