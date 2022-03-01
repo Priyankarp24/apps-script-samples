@@ -53,6 +53,7 @@ function claimYourVideoWithMonetizePolicy() {
  * asset.
  */
 function updateAssetOwnership() {
+  // The ID of the content owner that you are acting on behalf of.
   const onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
   const assetId = 'replaceWithYourAssetID';
   // The new ownership here would replace your existing ownership on the asset.
@@ -86,6 +87,7 @@ function updateAssetOwnership() {
  * on a video.
  */
 function releaseClaim() {
+  // The ID of the content owner that you are acting on behalf of.
   const onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
   // The ID of the claim to be released.
   const claimId = 'replaceWithYourClaimID';
