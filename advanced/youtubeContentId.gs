@@ -20,12 +20,12 @@
  */
 function claimYourVideoWithMonetizePolicy() {
   // The ID of the content owner that you are acting on behalf of.
-  var onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
+  const onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
   // A YouTube video ID to claim. In this example, the video must be uploaded
   // to one of your onBehalfOfContentOwner's linked channels.
-  var videoId = 'replaceWithYourVideoID';
-  var assetId = 'replaceWithYourAssetID';
-  var claimToInsert = {
+  const videoId = 'replaceWithYourVideoID';
+  const assetId = 'replaceWithYourAssetID';
+  const claimToInsert = {
     'videoId': videoId,
     'assetId': assetId,
     'contentType': 'audiovisual',
@@ -37,7 +37,7 @@ function claimYourVideoWithMonetizePolicy() {
     'policy': {'rules': [{'action': 'monetize'}]}
   };
   try {
-    var claimInserted = YouTubeContentId.Claims.insert(claimToInsert,
+    const claimInserted = YouTubeContentId.Claims.insert(claimToInsert,
         {'onBehalfOfContentOwner': onBehalfOfContentOwner});
     Logger.log('Claim created on video %s: %s', videoId, claimInserted);
   } catch (e) {
@@ -53,10 +53,10 @@ function claimYourVideoWithMonetizePolicy() {
  * asset.
  */
 function updateAssetOwnership() {
-  var onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
-  var assetId = 'replaceWithYourAssetID';
+  const onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
+  const assetId = 'replaceWithYourAssetID';
   // The new ownership here would replace your existing ownership on the asset.
-  var myAssetOwnership = {
+  const myAssetOwnership = {
     'general': [
       {
         'ratio': 100,
@@ -70,7 +70,7 @@ function updateAssetOwnership() {
     ]
   };
   try {
-    var updatedOwnership = YouTubeContentId.Ownership.update(myAssetOwnership,
+    const updatedOwnership = YouTubeContentId.Ownership.update(myAssetOwnership,
         assetId, {'onBehalfOfContentOwner': onBehalfOfContentOwner});
     Logger.log('Ownership updated on asset %s: %s', assetId, updatedOwnership);
   } catch (e) {
@@ -86,15 +86,15 @@ function updateAssetOwnership() {
  * on a video.
  */
 function releaseClaim() {
-  var onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
+  const onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
   // The ID of the claim to be released.
-  var claimId = 'replaceWithYourClaimID';
+  const claimId = 'replaceWithYourClaimID';
   // To release the claim, change the resource's status to inactive.
-  var claimToBeReleased = {
+  const claimToBeReleased = {
     'status': 'inactive'
   };
   try {
-    var claimReleased = YouTubeContentId.Claims.patch(claimToBeReleased,
+    const claimReleased = YouTubeContentId.Claims.patch(claimToBeReleased,
         claimId, {'onBehalfOfContentOwner': onBehalfOfContentOwner});
     Logger.log('Claim %s was released: %s', claimId, claimReleased);
   } catch (e) {
