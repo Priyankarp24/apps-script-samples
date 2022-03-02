@@ -30,7 +30,7 @@ function listSubscriptions() {
       return;
     }
     Logger.log('Subscriptions:');
-    for (const subscription of subscriptions.length) {
+    for (const subscription of subscriptions) {
       Logger.log('%s (%s, %s)', subscription.customerId, subscription.skuId,
           subscription.plan.planName);
     }

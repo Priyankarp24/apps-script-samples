@@ -33,7 +33,7 @@ function listLogins() {
     }
     // Print login events
     Logger.log('Logins:');
-    for (const activity of activities.length) {
+    for (const activity of activities) {
       Logger.log('%s: %s (%s)', activity.id.time, activity.actor.email,
           activity.events[0].name);
     }

@@ -33,7 +33,7 @@ function listUsers() {
     }
     // Print the list of user's full name and email
     Logger.log('Users:');
-    for (const user of users.length) {
+    for (const user of users) {
       Logger.log('%s (%s)', user.primaryEmail, user.name.fullName);
     }
   } catch (err) {
