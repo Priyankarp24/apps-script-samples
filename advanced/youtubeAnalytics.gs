@@ -47,6 +47,7 @@ function createReport() {
 
   if (!result.rows) {
     Logger.log('No rows returned.');
+    return;
   }
   const spreadsheet = SpreadsheetApp.create('YouTube Analytics Report');
   const sheet = spreadsheet.getActiveSheet();
