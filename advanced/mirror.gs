@@ -43,6 +43,7 @@ function insertTimelineItem() {
 // [START apps_script_mirror_contact]
 /**
  * This sample inserts a new contact.
+ * @see https://developers.google.com/glass/v1/reference/contacts/insert
  */
 function insertContact() {
   const contact = {
@@ -64,6 +65,7 @@ function insertContact() {
 /**
  * This sample prints the most recent known location of the user's Glass to the
  * script editor's log.
+ * @see https://developers.google.com/glass/v1/reference/locations/get
  */
 function printLatestLocation() {
   try {
