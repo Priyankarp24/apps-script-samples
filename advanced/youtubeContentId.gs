@@ -17,6 +17,7 @@
 /**
  * This function creates a partner-uploaded claim on a video with the specified
  * asset and policy rules.
+ * @see https://developers.google.com/youtube/partner/docs/v1/claims/insert
  */
 function claimYourVideoWithMonetizePolicy() {
   // The ID of the content owner that you are acting on behalf of.
@@ -51,10 +52,12 @@ function claimYourVideoWithMonetizePolicy() {
 /**
  * This function updates your onBehalfOfContentOwner's ownership on an existing
  * asset.
+ * @see https://developers.google.com/youtube/partner/docs/v1/ownership/update
  */
 function updateAssetOwnership() {
   // The ID of the content owner that you are acting on behalf of.
   const onBehalfOfContentOwner = 'replaceWithYourContentOwnerID';
+  // Replace values with your asset id
   const assetId = 'replaceWithYourAssetID';
   // The new ownership here would replace your existing ownership on the asset.
   const myAssetOwnership = {
@@ -85,6 +88,7 @@ function updateAssetOwnership() {
 /**
  * This function releases an existing claim your onBehalfOfContentOwner has
  * on a video.
+ * @see https://developers.google.com/youtube/partner/docs/v1/claims/patch
  */
 function releaseClaim() {
   // The ID of the content owner that you are acting on behalf of.
