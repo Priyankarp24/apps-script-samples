@@ -34,7 +34,7 @@ function insertTimelineItem() {
     Mirror.Timeline.insert(timelineItem);
     Logger.log('Successfully inserted new item to Timeline ');
   } catch (err) {
-  // TODO (developer)- Handle exception from the  API
+    // TODO (developer)- Handle exception from the  API
     Logger.log('Failed with error %s', err.message);
   }
 }
