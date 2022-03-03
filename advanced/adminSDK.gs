@@ -206,6 +206,7 @@ function getRecentMessagesContent() {
  * Gets a group's settings and logs them to the console.
  */
 function getGroupSettings() {
+  // TODO (developer) - Replace groupId value with yours
   const groupId = 'exampleGroup@example.com';
   try {
     const group = AdminGroupsSettings.Groups.get(groupId);
@@ -387,7 +388,7 @@ function generateUserUsageReport() {
     pageToken = page.nextPageToken;
   } while (pageToken);
 
-  if (rows.length > 0) {
+  if (rows.length === 0) {
     Logger.log('No results returned.');
     return;
   }
