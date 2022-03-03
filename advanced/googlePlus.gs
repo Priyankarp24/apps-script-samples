@@ -47,7 +47,7 @@ function getPeople() {
 function getPosts() {
   const userId = 'me';
   let posts;
-  let pageToken=null;
+  let pageToken = null;
   do {
     posts = Plus.Activities.list(userId, 'public', {
       maxResults: 10,
