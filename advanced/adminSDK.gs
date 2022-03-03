@@ -387,7 +387,7 @@ function generateUserUsageReport() {
     pageToken = page.nextPageToken;
   } while (pageToken);
 
-  if (rows.length > 0) {
+  if (rows.length === 0) {
     Logger.log('No results returned.');
     return;
   }
