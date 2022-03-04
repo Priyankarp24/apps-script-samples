@@ -170,8 +170,7 @@ function migrateMessages() {
   // TODO (developer) - Replace groupId value with yours
   const groupId = 'exampleGroup@example.com';
   const messagesToMigrate = getRecentMessagesContent();
-  for (let i = 0; i < messagesToMigrate.length; i++) {
-    const messageContent = messagesToMigrate[i];
+  for (const messageContent of messagesToMigrate) {
     const contentBlob = Utilities.newBlob(messageContent, 'message/rfc822');
     AdminGroupsMigration.Archive.insert(groupId, contentBlob);
   }
@@ -412,7 +411,7 @@ function generateUserUsageReport() {
  * @return {Object} A map from parameter names to their values.
  */
 function getParameterValues(parameters) {
-  return parameters.reduce(function(result, parameter) {
+  return parameters.reduce((result, parameter) => {
     const name = parameter.name;
     let value;
     if (parameter.intValue !== undefined) {
