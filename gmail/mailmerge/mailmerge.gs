@@ -18,7 +18,7 @@
 /**
  * Iterates row by row in the input range and returns an array of objects.
  * Each object contains all the data for a given row, indexed by its normalized column name.
- * @param {Sheet} sheet The sheet object that contains the data to be processed
+ * @param {Object} sheet The sheet object that contains the data to be processed
  * @param {Range} range The exact range of cells where the data is stored
  * @param {number} columnHeadersRowIndex Specifies the row number where the column names are stored.
  *   This argument is optional and it defaults to the row immediately above range;
@@ -26,9 +26,9 @@
  */
 function getRowsData(sheet, range, columnHeadersRowIndex) {
   columnHeadersRowIndex = columnHeadersRowIndex || range.getRowIndex() - 1;
-  var numColumns = range.getEndColumn() - range.getColumn() + 1;
-  var headersRange = sheet.getRange(columnHeadersRowIndex, range.getColumn(), 1, numColumns);
-  var headers = headersRange.getValues()[0];
+  const numColumns = range.getEndColumn() - range.getColumn() + 1;
+  const headersRange = sheet.getRange(columnHeadersRowIndex, range.getColumn(), 1, numColumns);
+  const headers = headersRange.getValues()[0];
   return getObjects(range.getValues(), normalizeHeaders(headers));
 }
 
@@ -40,12 +40,12 @@ function getRowsData(sheet, range, columnHeadersRowIndex) {
  * @return {object[]} A list of objects.
  */
 function getObjects(data, keys) {
-  var objects = [];
-  for (var i = 0; i < data.length; ++i) {
-    var object = {};
-    var hasData = false;
-    for (var j = 0; j < data[i].length; ++j) {
-      var cellData = data[i][j];
+  const objects = [];
+  for (let i = 0; i < data.length; ++i) {
+    const object = {};
+    let hasData = false;
+    for (let j = 0; j < data[i].length; ++j) {
+      const cellData = data[i][j];
       if (isCellEmpty(cellData)) {
         continue;
       }
@@ -65,9 +65,9 @@ function getObjects(data, keys) {
  * @return {string[]} An array of normalized strings.
  */
 function normalizeHeaders(headers) {
-  var keys = [];
-  for (var i = 0; i < headers.length; ++i) {
-    var key = normalizeHeader(headers[i]);
+  const keys = [];
+  for (let i = 0; i < headers.length; ++i) {
+    const key = normalizeHeader(headers[i]);
     if (key.length > 0) {
       keys.push(key);
     }
@@ -86,18 +86,17 @@ function normalizeHeaders(headers) {
  * @example "1 number at the beginning is ignored" -> "numberAtTheBeginningIsIgnored"
  */
 function normalizeHeader(header) {
-  var key = '';
-  var upperCase = false;
-  for (var i = 0; i < header.length; ++i) {
-    var letter = header[i];
-    if (letter == ' ' && key.length > 0) {
+  let key = '';
+  let upperCase = false;
+  for (const letter of header) {
+    if (letter === ' ' && key.length > 0) {
       upperCase = true;
       continue;
     }
     if (!isAlnum(letter)) {
       continue;
     }
-    if (key.length == 0 && isDigit(letter)) {
+    if (key.length === 0 && isDigit(letter)) {
       continue; // first character must be a letter
     }
     if (upperCase) {
@@ -116,7 +115,7 @@ function normalizeHeader(header) {
  * @return {boolean} True if the cell is empty.
  */
 function isCellEmpty(cellData) {
-  return typeof(cellData) == 'string' && cellData == '';
+  return typeof(cellData) === 'string' && cellData === '';
 }
 
 /**
@@ -143,39 +142,43 @@ function isDigit(char) {
  * Sends emails from spreadsheet rows.
  */
 function sendEmails() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var dataSheet = ss.getSheets()[0];
-  // [START apps_script_gmail_email_data_range]
-  var dataRange = dataSheet.getRange(2, 1, dataSheet.getMaxRows() - 1, 4);
-  // [END apps_script_gmail_email_data_range]
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const dataSheet = ss.getSheets()[0];
+    // [START apps_script_gmail_email_data_range]
+    const dataRange = dataSheet.getRange(2, 1, dataSheet.getMaxRows() - 1, 4);
+    // [END apps_script_gmail_email_data_range]
 
-  // [START apps_script_gmail_email_template]
-  var templateSheet = ss.getSheets()[1];
-  var emailTemplate = templateSheet.getRange('A1').getValue();
-  // [END apps_script_gmail_email_template]
+    // [START apps_script_gmail_email_template]
+    const templateSheet = ss.getSheets()[1];
+    const emailTemplate = templateSheet.getRange('A1').getValue();
+    // [END apps_script_gmail_email_template]
 
-  // [START apps_script_gmail_email_objects]
-  // Create one JavaScript object per row of data.
-  var objects = getRowsData(dataSheet, dataRange);
-  // [END apps_script_gmail_email_objects]
+    // [START apps_script_gmail_email_objects]
+    // Create one JavaScript object per row of data.
+    const objects = getRowsData(dataSheet, dataRange);
+    // [END apps_script_gmail_email_objects]
 
-  // For every row object, create a personalized email from a template and send
-  // it to the appropriate person.
-  for (var i = 0; i < objects.length; ++i) {
-    // Get a row object
-    var rowData = objects[i];
+    // For every row object, create a personalized email from a template and send
+    // it to the appropriate person.
+    for (const rowData of objects) {
+      // [START apps_script_gmail_email_text]
+      /** Generate a personalized email.
+       * Given a template string, replace markers (for instance ${"First Name"}) with
+       * the corresponding value in a row object (for instance rowData.firstName).
+       */
+      const emailText = fillInTemplateFromObject(emailTemplate, rowData);
+      // [END apps_script_gmail_email_text]
+      const emailSubject = 'Tutorial: Simple Mail Merge';
 
-    // [START apps_script_gmail_email_text]
-    // Generate a personalized email.
-    // Given a template string, replace markers (for instance ${"First Name"}) with
-    // the corresponding value in a row object (for instance rowData.firstName).
-    var emailText = fillInTemplateFromObject(emailTemplate, rowData);
-    // [END apps_script_gmail_email_text]
-    var emailSubject = 'Tutorial: Simple Mail Merge';
-
-    // [START apps_script_gmail_send_email]
-    MailApp.sendEmail(rowData.emailAddress, emailSubject, emailText);
-    // [END apps_script_gmail_send_email]
+      // [START gmail_send_email_with_mail_merge]
+      // Send mail with email sunbject and text to email addresses present in sheet
+      MailApp.sendEmail(rowData.emailAddress, emailSubject, emailText);
+      // [END gmail_send_email_with_mail_merge]
+    }
+  } catch (err) {
+    // TODO (developer) - Handle exception
+    Logger.log('Failed with an error %s', err.message);
   }
 }
 
