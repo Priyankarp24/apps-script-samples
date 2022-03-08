@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 // [START apps_script_calendar_vacation]
-var TEAM_CALENDAR_ID = 'ENTER_TEAM_CALENDAR_ID_HERE';
-var KEYWORDS = ['vacation', 'ooo', 'out of office'];
-var MONTHS_IN_ADVANCE = 3;
+const TEAM_CALENDAR_ID = 'ENTER_TEAM_CALENDAR_ID_HERE';
+const KEYWORDS = ['vacation', 'ooo', 'out of office'];
+const MONTHS_IN_ADVANCE = 3;
 
 // The maximum script run time under Apps Script Pro is 30 minutes; this setting
 // will be used to report when the script is about to reach that limit.
-var MAX_PRO_RUNTIME_MS = 29 * 60 * 1000;
+const MAX_PRO_RUNTIME_MS = 29 * 60 * 1000;
 
 /**
  * Look through the domain users' public calendars and add any
@@ -28,29 +28,28 @@ var MAX_PRO_RUNTIME_MS = 29 * 60 * 1000;
  */
 function syncTeamVacationCalendar() {
   // Define the calendar event date range to search.
-  var today = new Date();
-  var futureDate = new Date();
+  const today = new Date();
+  const futureDate = new Date();
   futureDate.setMonth(futureDate.getMonth() + MONTHS_IN_ADVANCE);
-  var lastRun = PropertiesService.getScriptProperties().getProperty('lastRun');
+  let lastRun = PropertiesService.getScriptProperties().getProperty('lastRun');
   lastRun = lastRun ? new Date(lastRun) : null;
 
   // Get the list of users in the domain.
-  var users = getDomainUsers();
+  const users = getDomainUsers();
 
   // For each user, find events having one or more of the keywords in the event
   // summary in the specified date range. Import each of those to the team
   // calendar.
-  var count = 0;
-  var timeout = false;
-  for (var i = 0; i < users.length; i++) {
+  let count = 0;
+  let timeout = false;
+  for (const user of users) {
     if (isTimeUp(today, new Date())) {
       timeout = true;
       break;
     }
-    var user = users[i];
-    var username = user.split('@')[0];
+    const username = user.split('@')[0];
     KEYWORDS.forEach(function(keyword) {
-      var events = findEvents(user, keyword, today, futureDate, lastRun);
+      const events = findEvents(user, keyword, today, futureDate, lastRun);
       events.forEach(function(event) {
         event.summary = '[' + username + '] ' + event.summary;
         event.organizer = {
@@ -63,7 +62,7 @@ function syncTeamVacationCalendar() {
           count++;
         } catch (e) {
           Logger.log(
-                'Error attempting to import event: %s. Skipping.', e.toString());
+              'Error attempting to import event: %s. Skipping.', e.toString());
         }
       });
     });
@@ -73,8 +72,8 @@ function syncTeamVacationCalendar() {
   if (timeout) {
     Logger.log('Execution time about to hit quota limit; execution stopped.');
   }
-  var executionTime = ((new Date()).getTime() - today.getTime()) / 1000.0;
-  Logger.log('Total execution time (s) : ' + executionTime); ;
+  const executionTime = ((new Date()).getTime() - today.getTime()) / 1000.0;
+  Logger.log('Total execution time (s) : ' + executionTime);
 }
 
 /**
@@ -89,7 +88,7 @@ function syncTeamVacationCalendar() {
  * @return {object[]} an array of calendar event Objects.
  */
 function findEvents(user, keyword, start, end, opt_since) {
-  var params = {
+  const params = {
     q: keyword,
     timeMin: formatDate(start),
     timeMax: formatDate(end),
@@ -101,9 +100,9 @@ function findEvents(user, keyword, start, end, opt_since) {
     // script was run).
     params['updatedMin'] = formatDate(opt_since);
   }
-  var results = [];
+  let results = [];
   try {
-    var response = Calendar.Events.list(user, params);
+    const response = Calendar.Events.list(user, params);
     results = response.items.filter(function(item) {
       // Filter out events where the keyword did not appear in the summary
       // (that is, the keyword appeared in a different field, and are thus
@@ -113,14 +112,14 @@ function findEvents(user, keyword, start, end, opt_since) {
       }
       // If the event was created by someone other than the user, only include
       // it if the user has marked it as 'accepted'.
-      if (item.organizer && item.organizer.email != user) {
+      if (item.organizer && item.organizer.email !== user) {
         if (!item.attendees) {
           return false;
         }
-        var matching = item.attendees.filter(function(attendee) {
+        const matching = item.attendees.filter(function(attendee) {
           return attendee.self;
         });
-        return matching.length > 0 && matching[0].status == 'accepted';
+        return matching.length > 0 && matching[0].status === 'accepted';
       }
       return true;
     });
@@ -137,9 +136,9 @@ function findEvents(user, keyword, start, end, opt_since) {
  * @return {string[]} An array of user email strings.
  */
 function getDomainUsers() {
-  var pageToken;
-  var page;
-  var userEmails = [];
+  let pageToken;
+  let page;
+  let userEmails = [];
   do {
     page = AdminDirectory.Users.list({
       customer: 'my_customer',
@@ -148,9 +147,9 @@ function getDomainUsers() {
       pageToken: pageToken,
       viewType: 'domain_public'
     });
-    var users = page.users;
+    const users = page.users;
     if (users) {
-      userEmails = userEmails.concat(users.map(function(user) {
+      userEmails = userEmails.concat(users.map((user) => {
         return user.primaryEmail;
       }));
     } else {
