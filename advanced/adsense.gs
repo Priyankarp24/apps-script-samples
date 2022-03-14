@@ -21,14 +21,14 @@ function listAccounts() {
   let pageToken;
   do {
     const response = AdSense.Accounts.list({pageToken: pageToken});
-    if (response.accounts) {
-      for (const account of response.accounts) {
-        Logger.log('Found account with resource name "%s" and display name "%s".',
-            account.name, account.displayName);
-      }
-    } else {
+    if (!response.accounts) {
       Logger.log('No accounts found.');
+      return;
+      }
     }
+    for (const account of response.accounts) {
+      Logger.log('Found account with resource name "%s" and display name "%s".',
+          account.name, account.displayName);
     pageToken = response.nextPageToken;
   } while (pageToken);
 }
@@ -75,14 +75,14 @@ function listAdUnits(adClientName) {
       pageSize: 50,
       pageToken: pageToken
     });
-    if (response.adUnits) {
-      for (const adUnit of response.adUnits) {
+    if (!response.adUnits) {
+      Logger.log('No ad units found for this ad client.');
+      return;
+      }
+    }
+    for (const adUnit of response.adUnits) {
         Logger.log('Found ad unit with resource name "%s" and display name "%s".',
             adUnit.name, adUnit.displayName);
-      }
-    } else {
-      Logger.log('No ad units found for this ad client.');
-    }
 
     pageToken = response.nextPageToken;
   } while (pageToken);
@@ -114,22 +114,22 @@ function generateReport(accountName, adClientReportingDimensionId) {
     orderBy: ['+DATE']
   });
 
-  if (report.rows) {
-    const spreadsheet = SpreadsheetApp.create('AdSense Report');
-    const sheet = spreadsheet.getActiveSheet();
+  if (!report.rows) {
+   Logger.log('No rows returned.');
+    return;
+  } 
+  const spreadsheet = SpreadsheetApp.create('AdSense Report');
+  const sheet = spreadsheet.getActiveSheet();
 
-    // Append the headers.
-    sheet.appendRow(report.headers.map((header) => header.name));
+  // Append the headers.
+  sheet.appendRow(report.headers.map((header) => header.name));
 
-    // Append the results.
-    sheet.getRange(2, 1, report.rows.length, report.headers.length)
-        .setValues(report.rows.map((row) => row.cells.map((cell) => cell.value)));
+  // Append the results.
+  sheet.getRange(2, 1, report.rows.length, report.headers.length)
+      .setValues(report.rows.map((row) => row.cells.map((cell) => cell.value)));
 
-    Logger.log('Report spreadsheet created: %s',
-        spreadsheet.getUrl());
-  } else {
-    Logger.log('No rows returned.');
-  }
+  Logger.log('Report spreadsheet created: %s',
+      spreadsheet.getUrl());
 }
 
 /**
