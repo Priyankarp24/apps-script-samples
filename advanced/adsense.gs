@@ -24,11 +24,11 @@ function listAccounts() {
     if (!response.accounts) {
       Logger.log('No accounts found.');
       return;
-      }
     }
     for (const account of response.accounts) {
       Logger.log('Found account with resource name "%s" and display name "%s".',
           account.name, account.displayName);
+    }
     pageToken = response.nextPageToken;
   } while (pageToken);
 }
@@ -47,15 +47,15 @@ function listAdClients(accountName) {
     const response = AdSense.Accounts.Adclients.list(accountName, {
       pageToken: pageToken
     });
-    if (response.adClients) {
-      for (const adClient of response.adClients) {
-        Logger.log('Found ad client for product "%s" with resource name "%s".',
-            adClient.productCode, adClient.name);
-        Logger.log('Reporting dimension ID: %s',
-            adClient.reportingDimensionId ?? 'None');
-      }
-    } else {
+    if (!response.adClients) {
       Logger.log('No ad clients found for this account.');
+      return;
+    }
+    for (const adClient of response.adClients) {
+      Logger.log('Found ad client for product "%s" with resource name "%s".',
+          adClient.productCode, adClient.name);
+      Logger.log('Reporting dimension ID: %s',
+          adClient.reportingDimensionId ?? 'None');
     }
     pageToken = response.nextPageToken;
   } while (pageToken);
@@ -78,11 +78,11 @@ function listAdUnits(adClientName) {
     if (!response.adUnits) {
       Logger.log('No ad units found for this ad client.');
       return;
-      }
     }
     for (const adUnit of response.adUnits) {
-        Logger.log('Found ad unit with resource name "%s" and display name "%s".',
-            adUnit.name, adUnit.displayName);
+      Logger.log('Found ad unit with resource name "%s" and display name "%s".',
+          adUnit.name, adUnit.displayName);
+    }
 
     pageToken = response.nextPageToken;
   } while (pageToken);
@@ -115,9 +115,9 @@ function generateReport(accountName, adClientReportingDimensionId) {
   });
 
   if (!report.rows) {
-   Logger.log('No rows returned.');
+    Logger.log('No rows returned.');
     return;
-  } 
+  }
   const spreadsheet = SpreadsheetApp.create('AdSense Report');
   const sheet = spreadsheet.getActiveSheet();
 
